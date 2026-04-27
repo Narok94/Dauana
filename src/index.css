@@ -3,18 +3,20 @@
 @theme {
   --color-background: #050505;
   --color-foreground: #fafafa;
-  --color-card: #0d0d0d;
+  --color-card: #0a0a0a;
   --color-muted: #737373;
-  --color-border-subtle: #1f1f1f;
+  --color-border-subtle: #161616;
   --color-accent: #ffffff;
+  
+  --shadow-premium: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 30px -4px rgba(0, 0, 0, 0.8);
 }
 
 :root {
   --background: 0 0% 2%;
   --foreground: 0 0% 98%;
-  --card: 0 0% 5%;
+  --card: 0 0% 4%;
   --muted: 0 0% 45%;
-  --border-subtle: 0 0% 12%;
+  --border-subtle: 0 0% 8%;
 }
 
 body {
@@ -23,6 +25,21 @@ body {
   font-family: "Inter", "Helvetica Neue", sans-serif;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(circle at 50% -10%, #151515 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+.glass-card {
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-premium);
+}
+
+.text-gradient {
+  background: linear-gradient(180deg, #fff 20%, rgba(255, 255, 255, 0.5) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -56,6 +73,6 @@ body {
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--color-border-subtle);
   }
 }

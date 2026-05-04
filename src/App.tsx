@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Sidebar } from './components/Sidebar';
 import { Login } from './components/Login';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { Appointment, Service, Expense, User } from './types';
+import { Appointment, Service, User } from './types';
 
 // Lazy loading views for better mobile performance
 const Dashboard = lazy(() => import('./components/Dashboard').then(module => ({ default: module.Dashboard })));
@@ -37,19 +37,9 @@ export default function App() {
     { id: '2', clientName: 'Gabriela Mendes', service: 'Bronzeamento Natural', date: new Date().toISOString().split('T')[0], time: '10:30', status: 'completed' },
   ]);
 
-  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [
-    { id: '1', description: 'Aluguel', amount: 1500, date: new Date().toISOString().split('T')[0], category: 'Operacional' },
-    { id: '2', description: 'Produtos', amount: 350, date: new Date().toISOString().split('T')[0], category: 'Insumos' },
-  ]);
-
   const addAppointment = (newApp: Omit<Appointment, 'id'>) => {
     const app = { ...newApp, id: Math.random().toString(36).substr(2, 9) } as Appointment;
     setAppointments([...appointments, app]);
-  };
-
-  const addExpense = (newExp: Omit<Expense, 'id'>) => {
-    const exp = { ...newExp, id: Math.random().toString(36).substr(2, 9) } as Expense;
-    setExpenses([...expenses, exp]);
   };
 
   const removeAppointment = (id: string) => {
@@ -104,9 +94,7 @@ export default function App() {
                       onAdd={addAppointment} 
                       onRemove={removeAppointment}
                       onUpdate={updateAppointment}
-                      onAddExpense={addExpense}
                       services={services}
-                      expenses={expenses}
                       role={user.role}
                     />
                   </motion.div>
@@ -156,8 +144,6 @@ export default function App() {
                     className="flex-1 h-full overflow-hidden"
                   >
                     <FinanceView 
-                      expenses={expenses} 
-                      setExpenses={setExpenses}
                       appointments={appointments}
                       services={services}
                     />

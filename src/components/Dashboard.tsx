@@ -13,7 +13,7 @@ import {
 import { motion } from 'motion/react';
 import { format, isSameDay, parseISO, startOfWeek, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Appointment, Service, Expense, Role } from '../types';
+import { Appointment, Service, Role } from '../types';
 import { AddAppointmentModal } from './AddAppointmentModal';
 import { cn } from '../lib/utils';
 import { useBusinessLogic } from '../hooks/useBusinessLogic';
@@ -32,18 +32,14 @@ interface DashboardProps {
   onAdd: (app: Omit<Appointment, 'id'>) => void;
   onRemove: (id: string) => void;
   onUpdate: (app: Appointment) => void;
-  onAddExpense: (exp: Omit<Expense, 'id'>) => void;
   services: Service[];
-  expenses: Expense[];
   role: Role;
 }
 
-export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpense, services, expenses, role }: DashboardProps) {
+export function Dashboard({ appointments, onAdd, onRemove, onUpdate, services, role }: DashboardProps) {
   const [showAddForm, setShowAddForm] = useState(false);
-  const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showTodayModal, setShowTodayModal] = useState(false);
-  const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'Material' });
-  const { stats, cashFlowData } = useBusinessLogic(appointments, services, expenses);
+  const { stats, cashFlowData } = useBusinessLogic(appointments, services);
   const today = useMemo(() => new Date(), []);
   
   const todayAppointments = useMemo(() => appointments
@@ -54,18 +50,6 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpens
     const service = services.find(s => s.name === app.service);
     return acc + (service?.price || 0);
   }, 0), [todayAppointments, services]);
-
-  const handleAddExpense = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAddExpense({
-      description: newExpense.description,
-      amount: Number(newExpense.amount),
-      category: newExpense.category,
-      date: new Date().toISOString().split('T')[0]
-    });
-    setNewExpense({ description: '', amount: '', category: 'Material' });
-    setShowExpenseForm(false);
-  };
 
   const sendWhatsAppReminder = (app: Appointment) => {
     const text = `Oi ${app.clientName}! Confirmando seu horário de ${app.service} hoje às ${app.time}. Até breve!`;
@@ -105,14 +89,6 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpens
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
-            <div className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-neutral-50 rounded-2xl border border-neutral-100">
-              <TrendingUp className="w-3.5 h-3.5 text-gold" />
-              <div className="text-left">
-                <p className="text-[8px] font-black text-muted uppercase tracking-widest opacity-60">Progresso Previsto</p>
-                <p className="text-[11px] font-bold text-neutral-900 font-mono">R$ {stats.forecastBalance.toLocaleString('pt-BR')}</p>
-              </div>
-            </div>
-
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setShowAddForm(true)}
@@ -121,14 +97,6 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpens
               >
                 <PlusCircle className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
                 <span className="hidden md:inline text-[9px] font-black uppercase tracking-widest">Agendar</span>
-              </button>
-              
-              <button 
-                onClick={() => setShowExpenseForm(true)}
-                className="w-10 h-10 bg-white border border-neutral-100 text-neutral-900 rounded-2xl transition-all hover:bg-neutral-50 flex items-center justify-center shadow-sm active:scale-95 text-gold"
-                title="Lançar Despesa"
-              >
-                <Wallet className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -378,43 +346,6 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpens
         />
       )}
 
-      {showExpenseForm && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setShowExpenseForm(false)} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white w-full max-w-sm rounded-[40px] p-10 relative z-20 shadow-2xl">
-            <h2 className="text-xl font-black italic tracking-tighter mb-8 uppercase text-black">Nova Despesa</h2>
-            <form onSubmit={handleAddExpense} className="space-y-6">
-              <input 
-                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none"
-                placeholder="Descrição"
-                value={newExpense.description}
-                onChange={e => setNewExpense({...newExpense, description: e.target.value})}
-                required
-              />
-              <input 
-                type="number"
-                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none"
-                placeholder="Valor R$"
-                value={newExpense.amount}
-                onChange={e => setNewExpense({...newExpense, amount: e.target.value})}
-                required
-              />
-              <select 
-                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none appearance-none"
-                value={newExpense.category}
-                onChange={e => setNewExpense({...newExpense, category: e.target.value})}
-              >
-                <option>Material</option>
-                <option>Operacional</option>
-                <option>Outros</option>
-              </select>
-              <button type="submit" className="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">
-                Lançar Agora
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      )}
     </motion.div>
   );
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Appointment, Service, Expense, Client } from '../types';
+import { Appointment, Service, Client } from '../types';
 import { 
   startOfMonth, 
   endOfMonth, 
@@ -13,8 +13,7 @@ import {
 
 export function useBusinessLogic(
   appointments: Appointment[], 
-  services: Service[], 
-  expenses: Expense[]
+  services: Service[]
 ) {
   const stats = useMemo(() => {
     const now = new Date();
@@ -51,10 +50,6 @@ export function useBusinessLogic(
         return acc + (service?.price || 0);
       }, 0);
 
-    const curMonthExpenses = expenses
-      .filter(exp => isWithinInterval(parseISO(exp.date), currentMonthInterval))
-      .reduce((acc, exp) => acc + exp.amount, 0);
-
     // Most profitable services
     const serviceProfitability = services.map(service => {
       const count = appointments.filter(a => a.service === service.name && a.status === 'completed').length;
@@ -82,16 +77,13 @@ export function useBusinessLogic(
       curMonthRevenue,
       prevMonthRevenue,
       forecastRevenue,
-      forecastBalance: forecastRevenue - curMonthExpenses,
-      curMonthExpenses,
       serviceProfitability,
       vipClients,
       growth: prevMonthRevenue > 0 ? ((curMonthRevenue - prevMonthRevenue) / prevMonthRevenue) * 100 : 0
     };
-  }, [appointments, services, expenses]);
+  }, [appointments, services]);
 
   const cashFlowData = useMemo(() => {
-    const days = 30;
     const data = [];
     const today = startOfDay(new Date());
 
@@ -102,20 +94,14 @@ export function useBusinessLogic(
         const dayRevenue = appointments
             .filter(a => a.date === dateStr && (a.status === 'completed' || a.status === 'scheduled'))
             .reduce((acc, a) => acc + (services.find(s => s.name === a.service)?.price || 0), 0);
-            
-        const dayExpense = expenses
-            .filter(e => e.date === dateStr)
-            .reduce((acc, e) => acc + e.amount, 0);
 
         data.push({
             date: format(date, 'dd/MM'),
-            revenue: dayRevenue,
-            expense: dayExpense,
-            balance: dayRevenue - dayExpense
+            revenue: dayRevenue
         });
     }
     return data;
-  }, [appointments, services, expenses]);
+  }, [appointments, services]);
 
   return { stats, cashFlowData };
 }

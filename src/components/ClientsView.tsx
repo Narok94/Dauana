@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { format, parseISO } from 'date-fns';
-import { Appointment, Service } from '../types';
+import { Appointment, Service, Client } from '../types';
+import { MessageCircle, Phone, Heart } from 'lucide-react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 import { ptBR } from 'date-fns/locale';
 
@@ -12,9 +14,11 @@ interface ClientsViewProps {
 
 export function ClientsView({ appointments, services }: ClientsViewProps) {
   const [search, setSearch] = React.useState('');
+  const [clientsData, setClientsData] = useLocalStorage<Client[]>('clients-meta', []);
 
   const clients = Array.from(new Set(appointments.map(a => a.clientName))).map(name => {
     const apps = appointments.filter(a => a.clientName === name);
+    const meta = clientsData.find(c => c.name === name);
     return {
       name,
       totalVisits: apps.length,
@@ -22,7 +26,9 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
       totalSpent: apps.reduce((acc, curr) => {
         const service = services.find(s => s.name === curr.service);
         return acc + (service?.price || 0);
-      }, 0)
+      }, 0),
+      phone: meta?.phone || 'Não informado',
+      preferences: meta?.preferences || 'Sem observações especiais'
     };
   });
 
@@ -73,7 +79,7 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
                   <p className="text-[8px] md:text-[9px] text-muted uppercase tracking-[0.4em] mt-1 md:mt-2 font-black opacity-60">Membro Elite</p>
                 </div>
               </div>
-              <div className="flex-1 grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 relative z-10 w-full">
+              <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12 relative z-10 w-full">
                 <div>
                   <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Visitas</p>
                   <p className="text-2xl md:text-3xl font-light text-gradient">{client.totalVisits}</p>
@@ -84,12 +90,27 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
                     {format(parseISO(client.lastVisit), "d 'de' MMM, yyyy", { locale: ptBR })}
                   </p>
                 </div>
-                <div className="col-span-2 lg:col-span-1">
+                <div className="col-span-1">
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Preferências</p>
+                  <p className="text-[10px] font-bold text-black/70 italic leading-relaxed truncate max-w-[150px]" title={client.preferences}>
+                    {client.preferences}
+                  </p>
+                </div>
+                <div className="col-span-1">
                   <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Valor Total</p>
                   <p className="text-2xl md:text-3xl font-light tracking-tighter text-black">
                     R$ <span className="font-medium text-gradient">{client.totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   </p>
                 </div>
+              </div>
+              
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 relative z-10">
+                <button className="p-3 bg-neutral-50 rounded-2xl border border-neutral-100 text-muted hover:text-black hover:bg-neutral-100 transition-all">
+                  <Phone className="w-4 h-4" />
+                </button>
+                <button className="p-3 bg-neutral-50 rounded-2xl border border-neutral-100 text-muted hover:text-green-500 hover:bg-green-50 transition-all">
+                  <MessageCircle className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))

@@ -5,7 +5,8 @@ import {
   Settings, 
   Clock,
   Menu,
-  LogOut
+  LogOut,
+  Wallet
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -73,9 +74,10 @@ interface SidebarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
   onLogout: () => void;
+  role: 'admin' | 'staff';
 }
 
-export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, onLogout }: SidebarProps) {
+export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, onLogout, role }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
@@ -111,6 +113,15 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
             onClick={() => setActiveTab('clients')}
             collapsed={!isSidebarOpen}
           />
+          {role === 'admin' && (
+            <NavItem 
+              icon={<Wallet className="w-4 h-4" />} 
+              label="Financeiro" 
+              active={activeTab === 'finance'} 
+              onClick={() => setActiveTab('finance')}
+              collapsed={!isSidebarOpen}
+            />
+          )}
           <NavItem 
             icon={<Settings className="w-4 h-4" />} 
             label="Serviços" 
@@ -182,6 +193,14 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
           active={activeTab === 'clients'} 
           onClick={() => setActiveTab('clients')} 
         />
+        {role === 'admin' && (
+          <MobileNavItem 
+            icon={<Wallet className="w-5 h-5" />} 
+            label="Financeiro"
+            active={activeTab === 'finance'} 
+            onClick={() => setActiveTab('finance')} 
+          />
+        )}
         <MobileNavItem 
           icon={<Settings className="w-5 h-5" />} 
           label="Serviços"

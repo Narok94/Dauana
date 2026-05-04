@@ -1,27 +1,70 @@
 import React, { useState } from 'react';
-import { Trash2, Sparkles } from 'lucide-react';
+import { 
+  Trash2, 
+  Sparkles, 
+  TrendingUp, 
+  TrendingDown, 
+  PlusCircle, 
+  Wallet, 
+  MessageCircle,
+  Crown,
+  FileText
+} from 'lucide-react';
 import { motion } from 'motion/react';
 import { format, isSameDay, parseISO, startOfWeek, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Appointment, Service } from '../types';
+import { Appointment, Service, Expense, Role } from '../types';
 import { AddAppointmentModal } from './AddAppointmentModal';
 import { cn } from '../lib/utils';
+import { useBusinessLogic } from '../hooks/useBusinessLogic';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
 
 interface DashboardProps {
   appointments: Appointment[];
   onAdd: (app: Omit<Appointment, 'id'>) => void;
   onRemove: (id: string) => void;
+  onAddExpense: (exp: Omit<Expense, 'id'>) => void;
   services: Service[];
+  expenses: Expense[];
+  role: Role;
 }
 
-export function Dashboard({ appointments, onAdd, onRemove, services }: DashboardProps) {
+export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, services, expenses, role }: DashboardProps) {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'Material' });
+  const { stats, cashFlowData } = useBusinessLogic(appointments, services, expenses);
   const today = new Date();
-  const startOfCurrentWeek = startOfWeek(today, { weekStartsOn: 0 });
   
   const todayAppointments = appointments
     .filter(app => isSameDay(parseISO(app.date), today))
     .sort((a, b) => a.time.localeCompare(b.time));
+
+  const handleAddExpense = (e: React.FormEvent) => {
+    e.preventDefault();
+    onAddExpense({
+      description: newExpense.description,
+      amount: Number(newExpense.amount),
+      category: newExpense.category,
+      date: new Date().toISOString().split('T')[0]
+    });
+    setNewExpense({ description: '', amount: '', category: 'Material' });
+    setShowExpenseForm(false);
+  };
+
+  const sendWhatsAppReminder = (app: Appointment) => {
+    const text = `Oi ${app.clientName}! Confirmando seu horário de ${app.service} hoje às ${app.time}. Até breve!`;
+    const encoded = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  };
 
   return (
     <motion.div 
@@ -31,26 +74,99 @@ export function Dashboard({ appointments, onAdd, onRemove, services }: Dashboard
       className="flex flex-col lg:flex-row h-full overflow-hidden bg-background"
     >
       <div className="flex-1 flex flex-col h-full border-r border-border-subtle overflow-hidden">
-        <header className="h-20 border-b border-border-subtle flex items-center justify-between px-6 md:px-10 shrink-0 bg-white/80 backdrop-blur-md sticky top-0 z-10">
-          <div>
-            <h2 className="text-lg md:text-xl font-bold text-gradient capitalize">
-              {format(today, "EEEE, d 'de' MMMM", { locale: ptBR })}
+        <header className="h-24 border-b border-border-subtle flex items-center justify-between px-6 md:px-10 shrink-0 bg-white/80 backdrop-blur-md sticky top-0 z-10 gap-4">
+          <div className="flex-1">
+            <h2 className="text-xl md:text-2xl font-black text-gradient uppercase italic tracking-tighter leading-none">
+              DAUANA <span className="text-[10px] font-black tracking-widest text-muted italic ml-1 opacity-40">System</span>
             </h2>
-            <p className="text-[9px] md:text-[10px] text-muted uppercase tracking-widest font-bold mt-0.5 opacity-60">
-              Você tem {todayAppointments.length} agendamentos para hoje
+            <p className="text-[9px] md:text-[10px] text-muted uppercase tracking-[0.4em] font-black mt-1 opacity-60">
+              {format(today, "EEEE, d 'de' MMMM", { locale: ptBR })}
             </p>
           </div>
-          <button 
-            onClick={() => setShowAddForm(true)}
-            className="px-4 md:px-6 py-2 md:py-2.5 bg-black text-white text-[9px] md:text-xs font-black uppercase tracking-widest rounded-full hover:bg-neutral-800 transition-all hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.1)]"
-          >
-            <span className="hidden sm:inline">Novo Agendamento</span>
-            <span className="sm:hidden">+ Novo</span>
-          </button>
+
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-neutral-50 rounded-2xl border border-neutral-100">
+              <TrendingUp className="w-3.5 h-3.5 text-black" />
+              <div className="text-left">
+                <p className="text-[8px] font-black text-muted uppercase tracking-widest opacity-60">Saldo Previsto</p>
+                <p className="text-[11px] font-bold text-black">R$ {stats.forecastBalance.toLocaleString('pt-BR')}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setShowAddForm(true)}
+                className="w-10 h-10 md:w-auto md:px-6 md:h-11 bg-black text-white rounded-2xl transition-all hover:bg-neutral-800 flex items-center justify-center gap-2 shadow-xl active:scale-95"
+                title="Novo Agendamento"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span className="hidden md:inline text-[9px] font-black uppercase tracking-widest">Agendar</span>
+              </button>
+              
+              <button 
+                onClick={() => setShowExpenseForm(true)}
+                className="w-10 h-10 bg-white border border-neutral-100 text-black rounded-2xl transition-all hover:bg-neutral-50 flex items-center justify-center shadow-sm active:scale-95"
+                title="Lançar Despesa"
+              >
+                <Wallet className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </header>
 
-        <div className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar pb-32 md:pb-10">
-          <div className="grid grid-cols-1 gap-6 md:gap-8 max-w-3xl">
+        <div className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar pb-32">
+          {role === 'admin' && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <div className="glass-card p-6 rounded-[32px] border border-neutral-100 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.01] rounded-full blur-3xl group-hover:bg-black/[0.03] transition-colors" />
+                <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] mb-4 opacity-60">Faturamento Mês</p>
+                <h3 className="text-3xl font-black italic tracking-tighter text-black">R$ {stats.curMonthRevenue.toLocaleString('pt-BR')}</h3>
+                <div className="flex items-center gap-2 mt-4">
+                  <div className={cn(
+                    "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase",
+                    stats.growth >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
+                  )}>
+                    {stats.growth >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {Math.abs(stats.growth).toFixed(1)}%
+                  </div>
+                  <span className="text-[9px] font-bold text-muted uppercase tracking-widest opacity-40">vs mês anterior</span>
+                </div>
+              </div>
+
+              <div className="glass-card p-6 rounded-[32px] border border-neutral-100 shadow-sm col-span-1 md:col-span-2">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-60">Fluxo de Caixa 15 Dias</p>
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-black" />
+                      <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Receita</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-[120px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={cashFlowData}>
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#000" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#000" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="date" hide />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold' }}
+                      />
+                      <Area type="monotone" dataKey="revenue" stroke="#000" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-6 max-w-4xl">
+            <h3 className="text-[10px] font-black text-muted uppercase tracking-[0.4em] opacity-60 mb-2">Próximas Horas</h3>
             {todayAppointments.length === 0 ? (
               <div className="text-muted text-sm italic font-light opacity-50 bg-neutral-50 p-10 rounded-3xl border border-dashed border-neutral-200 text-center">
                 Descanse um pouco! Nenhum agendamento para hoje.
@@ -94,6 +210,13 @@ export function Dashboard({ appointments, onAdd, onRemove, services }: Dashboard
                         )}>
                           {app.status === 'completed' ? 'Concluído' : 'Confirmado'}
                         </span>
+                        <button 
+                          onClick={() => sendWhatsAppReminder(app)}
+                          className="p-2 text-muted hover:text-green-500 bg-neutral-50 hover:bg-green-50 rounded-lg transition-all"
+                          title="Lembrete WhatsApp"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -104,71 +227,67 @@ export function Dashboard({ appointments, onAdd, onRemove, services }: Dashboard
         </div>
       </div>
 
-      <div className="w-full lg:w-80 p-6 md:p-8 border-l border-border-subtle bg-neutral-50/50 backdrop-blur-xl flex flex-col gap-10 md:gap-12 shrink-0 pb-32 lg:pb-8 overflow-y-auto lg:overflow-visible">
-        <div>
-          <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-muted mb-6 md:mb-8 opacity-60">Visão da Semana</h3>
-          <div className="grid grid-cols-7 gap-1 md:gap-2">
-            {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => {
-              const dayDate = addDays(startOfCurrentWeek, i);
-              const isSelected = isSameDay(dayDate, today);
-              const hasAppointments = appointments.some(app => isSameDay(parseISO(app.date), dayDate));
-              
-              return (
-                <div key={i} className="text-center group cursor-pointer">
-                  <p className="text-[9px] md:text-[10px] text-muted mb-2 md:mb-3 font-black group-hover:text-black transition-colors">{d}</p>
-                  <div className={cn(
-                    "relative text-[9px] md:text-[10px] w-7 h-7 md:w-8 md:h-8 flex items-center justify-center mx-auto rounded-xl transition-all duration-300 font-bold",
-                    isSelected 
-                      ? "bg-black text-white shadow-lg scale-110" 
-                      : "text-muted border border-neutral-100 hover:border-black/10 hover:text-black bg-white"
-                  )}>
-                    {format(dayDate, 'd')}
-                    {hasAppointments && !isSelected && (
-                      <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-black rounded-full border-2 border-white" />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="space-y-8 md:space-y-10">
-           <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-muted opacity-60">Status de Hoje</h3>
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
-              <div className="glass-card p-5 md:p-6 rounded-3xl relative overflow-hidden group border border-neutral-100 shadow-sm">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.02] rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-black/[0.05] transition-all duration-500" />
-                <p className="text-[9px] text-muted uppercase tracking-[0.2em] font-black mb-2">Compromissos</p>
-                <p className="text-2xl md:text-3xl font-light text-black tracking-tighter">
-                  {todayAppointments.length} <span className="font-medium text-gradient">Hoje</span>
-                </p>
-              </div>
-              <div className="glass-card p-5 md:p-6 rounded-3xl relative overflow-hidden group border border-neutral-100 shadow-sm">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.02] rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-black/[0.05] transition-all duration-500" />
-                <p className="text-[9px] text-muted uppercase tracking-[0.2em] font-black mb-2">Ocupação</p>
-                <p className="text-2xl md:text-3xl font-light text-black tracking-tighter text-gradient">78%</p>
-                <div className="w-full bg-neutral-200 h-[3px] mt-4 md:mt-5 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: '78%' }}
-                    className="bg-black h-full" 
-                  />
-                </div>
-              </div>
-           </div>
-        </div>
-
-        <div className="mt-8 lg:mt-auto">
-          <div className="p-6 border border-dashed border-neutral-200 rounded-3xl flex items-center gap-3 bg-white/50">
-            <div className="flex-shrink-0">
-              <Sparkles className="w-4 h-4 text-black" />
-            </div>
+      <div className="w-full lg:w-96 p-8 border-l border-border-subtle bg-white flex flex-col gap-10 shrink-0 pb-32 lg:pb-8 overflow-y-auto">
+        {role === 'admin' && (
+          <>
             <div>
-              <p className="text-[9px] text-black/40 uppercase font-black tracking-widest mb-1">Dica de Gestão</p>
-              <p className="text-[10px] text-muted leading-relaxed uppercase tracking-tighter font-medium underline underline-offset-4 decoration-neutral-200">
-                "Revise seu catálogo mensalmente para otimizar lucros."
-              </p>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mb-6 opacity-60">Serviços Lucrativos</h3>
+              <div className="space-y-4">
+                {stats.serviceProfitability.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-neutral-50 flex items-center justify-center text-[10px] font-black border border-neutral-100 group-hover:bg-black group-hover:text-white transition-all">
+                        {i + 1}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-black uppercase tracking-tight">{item.name}</p>
+                        <p className="text-[9px] text-muted font-bold uppercase opacity-60">{item.count} atendimentos</p>
+                      </div>
+                    </div>
+                    <p className="text-xs font-black italic">R$ {item.revenue.toLocaleString('pt-BR')}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            <div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mb-6 opacity-60 flex items-center gap-2">
+                <Crown className="w-3 h-3" />
+                Clientes VIP
+              </h3>
+              <div className="grid grid-cols-1 gap-3">
+                {stats.vipClients.map((client, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
+                    <p className="text-[11px] font-black uppercase">{client.name}</p>
+                    <div className="px-2 py-1 bg-black text-white text-[8px] font-black rounded-lg">
+                      {client.count}X
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className="mt-4">
+           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted opacity-60 mb-4">Relatórios</h3>
+           <button className="w-full flex items-center justify-between p-5 bg-neutral-50 rounded-[24px] border border-neutral-100 hover:bg-white hover:shadow-md transition-all group">
+             <div className="flex items-center gap-3">
+               <FileText className="w-4 h-4 text-muted group-hover:text-black" />
+               <span className="text-[10px] font-black uppercase tracking-widest">Resumo Mensal PDF</span>
+             </div>
+             <TrendingUp className="w-3 h-3 opacity-20" />
+           </button>
+        </div>
+
+        <div className="mt-auto">
+          <div className="p-8 rounded-[40px] bg-neutral-900 text-white relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-white/10 transition-all" />
+            <Sparkles className="w-6 h-6 mb-4 opacity-50" />
+            <h4 className="text-xl font-black italic tracking-tighter mb-2">IA Business <br/> Insights</h4>
+            <p className="text-[10px] text-white/40 uppercase font-black leading-relaxed tracking-widest">
+              "A cor de cabelo do mês é acobreado. Prepare seu estoque!"
+            </p>
           </div>
         </div>
       </div>
@@ -179,6 +298,44 @@ export function Dashboard({ appointments, onAdd, onRemove, services }: Dashboard
           onAdd={onAdd} 
           services={services}
         />
+      )}
+
+      {showExpenseForm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setShowExpenseForm(false)} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white w-full max-w-sm rounded-[40px] p-10 relative z-20 shadow-2xl">
+            <h2 className="text-xl font-black italic tracking-tighter mb-8 uppercase text-black">Nova Despesa</h2>
+            <form onSubmit={handleAddExpense} className="space-y-6">
+              <input 
+                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none"
+                placeholder="Descrição"
+                value={newExpense.description}
+                onChange={e => setNewExpense({...newExpense, description: e.target.value})}
+                required
+              />
+              <input 
+                type="number"
+                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none"
+                placeholder="Valor R$"
+                value={newExpense.amount}
+                onChange={e => setNewExpense({...newExpense, amount: e.target.value})}
+                required
+              />
+              <select 
+                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-4 text-xs font-bold focus:bg-white outline-none appearance-none"
+                value={newExpense.category}
+                onChange={e => setNewExpense({...newExpense, category: e.target.value})}
+              >
+                <option>Material</option>
+                <option>Operacional</option>
+                <option>Outros</option>
+              </select>
+              <button type="submit" className="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">
+                Lançar Agora
+              </button>
+            </form>
+          </motion.div>
+        </div>
       )}
     </motion.div>
   );

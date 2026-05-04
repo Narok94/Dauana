@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { LogIn, ArrowRight } from 'lucide-react';
+import { User } from '../types';
 
 interface LoginProps {
-  onLogin: () => void;
+  onLogin: (user: User) => void;
 }
 
 export function Login({ onLogin }: LoginProps) {
@@ -17,10 +18,11 @@ export function Login({ onLogin }: LoginProps) {
     setError(false);
     setLoading(true);
 
-    // Simula loading para dar um efeito premium
     setTimeout(() => {
       if (username === 'admin' && password === 'admin') {
-        onLogin();
+        onLogin({ id: '1', name: 'Dauana Admin', username: 'admin', role: 'admin' });
+      } else if (username === 'staff' && password === 'staff') {
+        onLogin({ id: '2', name: 'Colaborador', username: 'staff', role: 'staff' });
       } else {
         setLoading(false);
         setError(true);

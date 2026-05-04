@@ -6,16 +6,17 @@ import { Dashboard } from './components/Dashboard';
 import { CalendarView } from './components/CalendarView';
 import { ClientsView } from './components/ClientsView';
 import { ServicesConfigView } from './components/ServicesConfigView';
+import { FinanceView } from './components/FinanceView';
 import { Login } from './components/Login';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { Appointment, Service } from './types';
+import { Appointment, Service, Expense, User } from './types';
 
-type Tab = 'dashboard' | 'calendar' | 'clients' | 'services';
+type Tab = 'dashboard' | 'calendar' | 'clients' | 'services' | 'finance';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   const [services, setServices] = useLocalStorage<Service[]>('services', [
     { id: '1', name: 'Corte Premium', duration: 45, price: 50 },
@@ -24,14 +25,23 @@ export default function App() {
   ]);
 
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', [
-    { id: '1', clientName: 'Ana Beatriz Silva', service: 'Corte + Hidratação', date: new Date().toISOString(), time: '09:00', status: 'scheduled' },
-    { id: '2', clientName: 'Ricardo Costa', service: 'Barba e Bigode', date: new Date().toISOString(), time: '10:30', status: 'completed' },
-    { id: '3', clientName: 'Mariana Lopes', service: 'Coloração Completa', date: addDays(new Date(), 1).toISOString(), time: '14:00', status: 'scheduled' },
+    { id: '1', clientName: 'Ana Beatriz Silva', service: 'Corte Premium', date: new Date().toISOString().split('T')[0], time: '09:00', status: 'scheduled' },
+    { id: '2', clientName: 'Ricardo Costa', service: 'Barba Tradicional', date: new Date().toISOString().split('T')[0], time: '10:30', status: 'completed' },
+  ]);
+
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [
+    { id: '1', description: 'Aluguel', amount: 1500, date: new Date().toISOString().split('T')[0], category: 'Operacional' },
+    { id: '2', description: 'Produtos', amount: 350, date: new Date().toISOString().split('T')[0], category: 'Insumos' },
   ]);
 
   const addAppointment = (newApp: Omit<Appointment, 'id'>) => {
     const app = { ...newApp, id: Math.random().toString(36).substr(2, 9) } as Appointment;
     setAppointments([...appointments, app]);
+  };
+
+  const addExpense = (newExp: Omit<Expense, 'id'>) => {
+    const exp = { ...newExp, id: Math.random().toString(36).substr(2, 9) } as Expense;
+    setExpenses([...expenses, exp]);
   };
 
   const removeAppointment = (id: string) => {
@@ -40,7 +50,7 @@ export default function App() {
 
   return (
     <AnimatePresence mode="wait">
-      {!isAuthenticated ? (
+      {!user ? (
         <motion.div
           key="login"
           initial={{ opacity: 0 }}
@@ -48,7 +58,7 @@ export default function App() {
           exit={{ opacity: 0 }}
           className="w-full h-full"
         >
-          <Login onLogin={() => setIsAuthenticated(true)} />
+          <Login onLogin={(u) => setUser(u)} />
         </motion.div>
       ) : (
         <motion.div 
@@ -62,7 +72,8 @@ export default function App() {
             setActiveTab={setActiveTab} 
             isSidebarOpen={isSidebarOpen} 
             setIsSidebarOpen={setIsSidebarOpen} 
-            onLogout={() => setIsAuthenticated(false)}
+            onLogout={() => setUser(null)}
+            role={user.role}
           />
 
           <main className="flex-1 flex flex-col overflow-hidden relative">
@@ -79,7 +90,10 @@ export default function App() {
                     appointments={appointments} 
                     onAdd={addAppointment} 
                     onRemove={removeAppointment}
+                    onAddExpense={addExpense}
                     services={services}
+                    expenses={expenses}
+                    role={user.role}
                   />
                 </motion.div>
               )}
@@ -116,6 +130,22 @@ export default function App() {
                   <ServicesConfigView 
                     services={services} 
                     setServices={setServices} 
+                  />
+                </motion.div>
+              )}
+              {activeTab === 'finance' && (
+                <motion.div 
+                  key="finance"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="flex-1 h-full overflow-hidden"
+                >
+                  <FinanceView 
+                    expenses={expenses} 
+                    setExpenses={setExpenses}
+                    appointments={appointments}
+                    services={services}
                   />
                 </motion.div>
               )}

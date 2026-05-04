@@ -65,8 +65,8 @@ export function ServicesConfigView({ services, setServices }: ServicesConfigView
       className="p-6 md:p-10 max-w-4xl overflow-y-auto custom-scrollbar h-full pb-32 md:pb-10 bg-background"
     >
       <div className="mb-10 md:mb-12">
-        <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gradient">Gestão de Serviços</h1>
-        <p className="text-[9px] md:text-[10px] text-muted mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-40">Configure seu catálogo e preços</p>
+        <h1 className="text-3xl md:text-4xl font-serif text-neutral-900">Catálogo de Serviços</h1>
+        <p className="text-[9px] md:text-[10px] text-gold mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-60">Curadoria de Experiências Premium</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
@@ -120,9 +120,9 @@ export function ServicesConfigView({ services, setServices }: ServicesConfigView
               </div>
             </div>
 
-            <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-neutral-800 transition-all flex items-center justify-center gap-2 shadow-md active:scale-95">
-              {editingId ? <Edit2 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              {editingId ? 'Salvar Alterações' : 'Salvar Serviço'}
+            <button type="submit" className="w-full bg-neutral-900 text-white py-5 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 group">
+              {editingId ? <Edit2 className="w-4 h-4 text-gold" /> : <Plus className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />}
+              {editingId ? 'Atualizar Serviço' : 'Publicar Serviço'}
             </button>
           </form>
         </div>
@@ -139,11 +139,17 @@ export function ServicesConfigView({ services, setServices }: ServicesConfigView
                 "glass-card p-5 md:p-6 rounded-2xl flex items-center justify-between group transition-all border shadow-sm",
                 editingId === s.id ? "bg-neutral-50 border-black/10" : "hover:bg-white border-neutral-100"
               )}>
-                <div>
-                  <h3 className="font-bold text-black">{s.name}</h3>
-                  <p className="text-[10px] text-muted mt-1 uppercase tracking-widest font-black opacity-60">
-                    {s.duration} min — R$ {s.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
+                <div className="flex-1">
+                  <h3 className="font-serif text-lg text-neutral-900">{s.name}</h3>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest opacity-60">
+                      {s.duration} min
+                    </p>
+                    <div className="w-1 h-1 rounded-full bg-gold/30" />
+                    <p className="text-[10px] text-gold font-black uppercase tracking-widest">
+                      R$ {s.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 

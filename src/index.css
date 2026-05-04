@@ -1,14 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #000000;
-  --color-card: #f9f9f9;
-  --color-muted: #666666;
+  --font-sans: "Montserrat", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --color-gold: #D4AF37;
+  --color-bronze: #A67C52;
+  --color-champagne: #FDFBF9;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-champagne text-neutral-900;
+  }
+}
+
+@theme {
+  --color-background: #FDFBF9;
+  --color-foreground: #171717;
+  --color-card: #ffffff;
+  --color-muted: #737373;
   --color-border-subtle: #f0f0f0;
-  --color-accent: #000000;
+  --color-accent: #D4AF37;
   
-  --shadow-premium: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 0 0 1px rgba(212, 175, 55, 0.05), 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+  --shadow-gold: 0 0 20px -5px rgba(212, 175, 55, 0.3);
 }
 
 :root {
@@ -19,14 +35,32 @@
   --border-subtle: 0 0% 94%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family: "Inter", "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   background-image: radial-gradient(circle at 50% -20%, #f0f0f0 0%, transparent 70%);
   background-attachment: fixed;
+  overscroll-behavior: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+@utility safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility safe-area-top {
+  padding-top: env(safe-area-inset-top);
 }
 
 .glass-card {
@@ -36,8 +70,14 @@ body {
   box-shadow: var(--shadow-premium);
 }
 
+.gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F5E0A3 50%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .text-gradient {
-  background: linear-gradient(180deg, #000 0%, #444 100%);
+  background: linear-gradient(180deg, #171717 0%, #444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

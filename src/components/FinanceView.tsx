@@ -80,23 +80,23 @@ export function FinanceView({ expenses, setExpenses, appointments, services }: F
     >
       <div className="mb-10 md:mb-12 flex flex-col md:flex-row justify-between md:items-end gap-6 text-black">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gradient">Fluxo de Caixa</h1>
-          <p className="text-[9px] md:text-[10px] text-muted mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-40">Gestão de Lucratividade Efetiva</p>
+          <h1 className="text-3xl md:text-4xl font-serif text-neutral-900">Gestão de Patrimônio</h1>
+          <p className="text-[9px] md:text-[10px] text-gold mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-60">Controle de Lucratividade Efetiva</p>
         </div>
         
         <div className="flex gap-3">
           <button 
             onClick={exportToCSV}
-            className="px-6 py-3 bg-neutral-100 text-black border border-neutral-200 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-neutral-200 transition-all"
+            className="px-6 py-3 bg-white text-neutral-900 border border-neutral-200 rounded-2xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-neutral-50 transition-all shadow-sm"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 text-gold" />
             Exportar CSV
           </button>
           <button 
             onClick={() => setShowAddExpense(true)}
-            className="px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-neutral-800 transition-all shadow-xl active:scale-95"
+            className="px-6 py-3 bg-neutral-900 text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-black transition-all shadow-xl active:scale-95 group"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
             Nova Despesa
           </button>
         </div>
@@ -104,29 +104,29 @@ export function FinanceView({ expenses, setExpenses, appointments, services }: F
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="glass-card p-8 rounded-[40px] border border-neutral-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/[0.03] rounded-full blur-3xl -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gold/[0.05] rounded-full blur-3xl -mr-16 -mt-16" />
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-60">Receita Bruta</p>
-            <ArrowUpRight className="w-4 h-4 text-green-500" />
+            <p className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.3em]">Receita Bruta</p>
+            <ArrowUpRight className="w-4 h-4 text-gold" />
           </div>
-          <h3 className="text-3xl font-black italic tracking-tighter text-black">R$ {stats.curMonthRevenue.toLocaleString('pt-BR')}</h3>
+          <h3 className="text-3xl font-serif text-neutral-900">R$ {stats.curMonthRevenue.toLocaleString('pt-BR')}</h3>
         </div>
 
         <div className="glass-card p-8 rounded-[40px] border border-neutral-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/[0.03] rounded-full blur-3xl -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-neutral-100 rounded-full blur-3xl -mr-16 -mt-16" />
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-60">Custo Total</p>
-            <ArrowDownRight className="w-4 h-4 text-red-500" />
+            <p className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.3em]">Custo Total</p>
+            <ArrowDownRight className="w-4 h-4 text-neutral-400" />
           </div>
-          <h3 className="text-3xl font-black italic tracking-tighter text-black">R$ {stats.curMonthExpenses.toLocaleString('pt-BR')}</h3>
+          <h3 className="text-3xl font-serif text-neutral-900">R$ {stats.curMonthExpenses.toLocaleString('pt-BR')}</h3>
         </div>
 
-        <div className="glass-card p-8 rounded-[40px] border border-neutral-100 shadow-sm bg-neutral-900 text-white relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.05] rounded-full blur-3xl -mr-16 -mt-16" />
-          <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] mb-4">Lucro Líquido</p>
-          <div className="flex items-end justify-between">
-            <h3 className="text-3xl font-black italic tracking-tighter">R$ {(stats.curMonthRevenue - stats.curMonthExpenses).toLocaleString('pt-BR')}</h3>
-            <div className="px-3 py-1.5 bg-white/10 rounded-xl text-[10px] font-black italic group-hover:bg-white/20 transition-all">
+        <div className="glass-card p-8 rounded-[40px] border border-gold/10 shadow-xl bg-neutral-900 text-white relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-gold/[0.08] rounded-full blur-3xl -mr-24 -mt-24" />
+          <p className="text-[9px] font-black text-gold/60 uppercase tracking-[0.3em] mb-4">Lucro Líquido</p>
+          <div className="flex items-end justify-between relative z-10">
+            <h3 className="text-3xl font-serif text-gold italic">R$ {(stats.curMonthRevenue - stats.curMonthExpenses).toLocaleString('pt-BR')}</h3>
+            <div className="px-3 py-1.5 bg-gold/10 rounded-xl text-[10px] font-black italic text-gold border border-gold/20">
               MARGEM {(stats.curMonthRevenue > 0 ? ((stats.curMonthRevenue - stats.curMonthExpenses) / stats.curMonthRevenue * 100).toFixed(0) : 0)}%
             </div>
           </div>
@@ -178,7 +178,7 @@ export function FinanceView({ expenses, setExpenses, appointments, services }: F
                   />
                   <Bar dataKey="balance" radius={[6, 6, 0, 0]}>
                     {cashFlowData.map((entry, index) => (
-                      <Cell key={index} fill={entry.balance >= 0 ? '#000' : '#ef4444'} />
+                      <Cell key={index} fill={entry.balance >= 0 ? '#D4AF37' : '#171717'} />
                     ))}
                   </Bar>
                 </BarChart>

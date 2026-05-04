@@ -45,8 +45,8 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
     >
       <div className="mb-10 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gradient">Portfólio de Clientes</h1>
-          <p className="text-[9px] md:text-[10px] text-muted mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-40">Gestão de Relacionamento Premium</p>
+          <h1 className="text-3xl md:text-4xl font-serif text-neutral-900">Carteira de Clientes</h1>
+          <p className="text-[9px] md:text-[10px] text-gold mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-60">Gestão de Relacionamento Premium</p>
         </div>
 
         <div className="relative w-full md:w-72">
@@ -68,38 +68,41 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
         ) : (
           filteredClients.map(client => (
             <div key={client.name} className="glass-card rounded-[32px] p-8 md:p-10 flex flex-col md:flex-row gap-8 md:gap-12 items-start md:items-center hover:bg-white transition-all duration-500 group relative overflow-hidden border border-neutral-100 shadow-sm">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-black/[0.01] rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-black/[0.03] transition-all duration-700" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/[0.02] rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-gold/[0.05] transition-all duration-700" />
               
               <div className="min-w-0 md:min-w-[260px] flex items-center gap-5 md:gap-6 relative z-10">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-50 rounded-2xl flex items-center justify-center border border-neutral-100 font-black text-lg md:text-xl group-hover:scale-110 transition-transform duration-500 group-hover:border-neutral-300 text-neutral-400">
-                  {client.name.split(' ').map(n => n[0]).join('')}
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-900 rounded-2xl flex items-center justify-center border border-gold/10 font-serif italic text-gold text-lg md:text-xl group-hover:scale-110 transition-transform duration-500">
+                  {client.name[0]}
                 </div>
                 <div>
-                  <h3 className="text-lg md:text-xl font-black text-black/90 group-hover:text-black transition-colors">{client.name}</h3>
-                  <p className="text-[8px] md:text-[9px] text-muted uppercase tracking-[0.4em] mt-1 md:mt-2 font-black opacity-60">Membro Elite</p>
+                  <h3 className="text-lg md:text-xl font-serif text-neutral-900 group-hover:text-black transition-colors">{client.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                    <p className="text-[8px] md:text-[9px] text-gold uppercase tracking-[0.4em] font-black">Cliente Elite</p>
+                  </div>
                 </div>
               </div>
               <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12 relative z-10 w-full">
                 <div>
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Visitas</p>
-                  <p className="text-2xl md:text-3xl font-light text-gradient">{client.totalVisits}</p>
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-1 md:mb-3">Visitas</p>
+                  <p className="text-2xl md:text-3xl font-serif italic text-neutral-900">{client.totalVisits}</p>
                 </div>
                 <div>
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Última Visita</p>
-                  <p className="text-sm md:text-xl font-light text-black/80 group-hover:text-black transition-colors">
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-1 md:mb-3">Última Visita</p>
+                  <p className="text-sm md:text-lg font-medium text-neutral-800">
                     {format(parseISO(client.lastVisit), "d 'de' MMM, yyyy", { locale: ptBR })}
                   </p>
                 </div>
                 <div className="col-span-1">
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Preferências</p>
-                  <p className="text-[10px] font-bold text-black/70 italic leading-relaxed truncate max-w-[150px]" title={client.preferences}>
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-1 md:mb-3">Preferências</p>
+                  <p className="text-[10px] font-medium text-neutral-600 italic leading-relaxed truncate max-w-[150px]" title={client.preferences}>
                     {client.preferences}
                   </p>
                 </div>
                 <div className="col-span-1">
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted font-black mb-1 md:mb-3 opacity-40">Valor Total</p>
-                  <p className="text-2xl md:text-3xl font-light tracking-tighter text-black">
-                    R$ <span className="font-medium text-gradient">{client.totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mb-1 md:mb-3">Valor Total</p>
+                  <p className="text-xl md:text-2xl font-serif tracking-tighter text-neutral-900">
+                    R$ <span className="font-bold text-neutral-900">{client.totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   </p>
                 </div>
               </div>

@@ -43,22 +43,22 @@ export function AddAppointmentModal({ onClose, onAdd, services }: AddAppointment
         exit={{ opacity: 0, scale: 0.98, y: 10 }}
         className="bg-white border border-neutral-100 w-full max-w-md rounded-[40px] p-10 md:p-12 relative overflow-hidden shadow-2xl group"
       >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-black/[0.01] rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-black/[0.03] transition-all duration-700" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gold/[0.02] rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-gold/[0.05] transition-all duration-700" />
         
         <div className="flex justify-between items-center mb-10 relative z-10">
-          <h2 className="text-2xl font-black tracking-tight text-gradient">Novo Agendamento</h2>
-          <button onClick={onClose} className="p-2 text-muted hover:text-black hover:bg-neutral-50 rounded-xl transition-all">
+          <h2 className="text-2xl font-serif text-neutral-900">Novo Agendamento</h2>
+          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-900 border border-transparent hover:border-neutral-100 rounded-xl transition-all">
             <X className="w-5 h-5" />
           </button>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted opacity-60 ml-1">Nome do Cliente</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gold opacity-80 ml-1">Cliente</label>
             <input 
               required
-              className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-5 text-sm text-black focus:outline-none focus:border-black/10 focus:bg-white transition-all placeholder:text-neutral-300"
-              placeholder="ex: João Silva"
+              className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-5 text-sm text-neutral-900 focus:outline-none focus:border-gold/20 focus:bg-white transition-all placeholder:text-neutral-300"
+              placeholder="Ex: Maria Eduarda"
               value={formData.clientName}
               onChange={e => setFormData({ ...formData, clientName: e.target.value })}
             />
@@ -114,9 +114,9 @@ export function AddAppointmentModal({ onClose, onAdd, services }: AddAppointment
           <button 
             type="submit" 
             disabled={services.length === 0}
-            className="w-full bg-black text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-neutral-800 transition-all mt-6 text-[10px] shadow-lg active:scale-95 disabled:opacity-50"
+            className="w-full bg-neutral-900 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.3em] hover:bg-black transition-all mt-6 text-[10px] shadow-xl active:scale-95 disabled:opacity-50 border border-gold/10"
           >
-            Confirmar Agendamento
+            Confirmar Reserva <span className="text-gold ml-1 italic font-serif">Elite</span>
           </button>
         </form>
       </motion.div>

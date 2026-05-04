@@ -31,13 +31,13 @@ function NavItem({ icon, label, active, onClick, collapsed }: NavItemProps) {
         className={cn(
           "flex items-center gap-3 w-full p-3.5 rounded-xl transition-all duration-300 group",
           active 
-            ? "bg-black text-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]" 
+            ? "bg-neutral-900 text-white shadow-[0_4px_20px_rgba(0,0,0,0.2)]" 
             : "text-muted hover:text-black hover:bg-neutral-50"
         )}
       >
         <div className={cn(
           "flex-shrink-0 transition-transform duration-300", 
-          active ? "text-white scale-110" : "group-hover:text-black group-hover:scale-110"
+          active ? "text-gold scale-110" : "group-hover:text-black group-hover:scale-110"
         )}>
           {icon}
         </div>
@@ -45,7 +45,7 @@ function NavItem({ icon, label, active, onClick, collapsed }: NavItemProps) {
         {active && !collapsed && (
           <motion.div 
             layoutId="sidebar-active"
-            className="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_#fff]" 
+            className="ml-auto w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_10px_rgba(212,175,55,0.8)]" 
           />
         )}
       </button>
@@ -87,8 +87,13 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
         className="hidden md:flex border-r border-border-subtle bg-white flex-col pt-10 relative transition-all duration-300 z-50 shrink-0"
       >
         <div className="px-10 mb-16">
-          <h1 className="text-3xl font-black tracking-tighter italic text-gradient">DAUANA</h1>
-          {isSidebarOpen && <p className="text-[9px] uppercase tracking-[0.4em] text-muted mt-2 font-black opacity-30">Sistema 2026</p>}
+          <h1 className="text-3xl font-serif tracking-tighter italic text-neutral-900">DAUANA</h1>
+          {isSidebarOpen && (
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-4 h-[1px] bg-gold/40" />
+              <p className="text-[8px] uppercase tracking-[0.4em] text-neutral-400 font-bold">Gestão de Elite</p>
+            </div>
+          )}
         </div>
 
         <nav className="flex-1 px-5 space-y-2">
@@ -133,13 +138,16 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
 
         <div className="p-8 border-t border-border-subtle">
           <div className="flex items-center gap-4 group cursor-pointer">
-             <div className="w-12 h-12 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-center justify-center font-black text-sm shrink-0 group-hover:scale-110 transition-transform duration-300 text-neutral-400">
-              DA
+             <div className="w-12 h-12 rounded-2xl bg-neutral-900 border border-gold/20 flex items-center justify-center font-serif italic text-gold text-lg shrink-0 group-hover:scale-110 transition-transform duration-300">
+              D
             </div>
             {isSidebarOpen && (
               <div className="overflow-hidden">
                 <p className="text-xs font-bold text-black/90 truncate">Dauana A.</p>
-                <p className="text-[9px] text-muted uppercase tracking-widest font-black truncate opacity-50">Conta Premium</p>
+                <div className="flex items-center gap-1">
+                   <div className="w-1 h-1 rounded-full bg-gold" />
+                   <p className="text-[8px] text-gold uppercase tracking-widest font-black truncate">Studio Premium</p>
+                </div>
               </div>
             )}
           </div>

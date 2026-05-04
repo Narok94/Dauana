@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogIn, ArrowRight } from 'lucide-react';
+import { LogIn, ArrowRight, Sparkles, Sun, Eye, Shapes } from 'lucide-react';
 import { User } from '../types';
 
 interface LoginProps {
@@ -19,9 +19,10 @@ export function Login({ onLogin }: LoginProps) {
     setLoading(true);
 
     setTimeout(() => {
-      if (username === 'admin' && password === 'admin') {
-        onLogin({ id: '1', name: 'Dauana Admin', username: 'admin', role: 'admin' });
-      } else if (username === 'staff' && password === 'staff') {
+      const normalizedUsername = username.toLowerCase();
+      if (normalizedUsername === 'dauana' && password === '12345') {
+        onLogin({ id: '1', name: 'Dauana Admin', username: 'dauana', role: 'admin' });
+      } else if (normalizedUsername === 'staff' && password === 'staff') {
         onLogin({ id: '2', name: 'Colaborador', username: 'staff', role: 'staff' });
       } else {
         setLoading(false);
@@ -31,99 +32,95 @@ export function Login({ onLogin }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Elementos Decorativos de Fundo */}
-      <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-black/[0.02] rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-black/[0.01] rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen w-full relative flex items-center justify-center p-6 overflow-hidden bg-neutral-900 font-sans">
+      {/* Background with subtle Blur */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-[3px]" />
+        <div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" 
+        />
+      </div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[420px] z-10"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-[420px] z-20"
       >
-        <div className="text-center mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-6xl font-black italic text-gradient tracking-tighter mb-4"
-          >
-            DAUANA
-          </motion.h1>
-          <p className="text-[10px] uppercase tracking-[0.6em] text-muted font-black opacity-40">
-            Acesso Restrito · System 2026
-          </p>
-        </div>
+        <div className="bg-white/95 backdrop-blur-md p-10 md:p-14 rounded-[48px] shadow-[0_30px_70px_rgba(0,0,0,0.4)] border border-white/40 relative group overflow-hidden">
+          {/* Accent Border Line */}
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-bronze via-gold to-bronze opacity-80" />
 
-        <motion.div 
-          animate={error ? { x: [-10, 10, -10, 10, 0] } : {}}
-          transition={{ duration: 0.4 }}
-          className="glass-card p-10 md:p-12 rounded-[48px] border border-neutral-100 shadow-2xl bg-white/80 backdrop-blur-xl relative group"
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.01] rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-black/[0.03] transition-all duration-700" />
-          
-          <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted opacity-60 ml-1">Usuário</label>
+          <div className="text-center mb-10">
+            <h1 className="text-5xl md:text-6xl font-serif text-neutral-900 tracking-tighter mb-4">
+              Dauana
+            </h1>
+            <div className="flex items-center justify-center gap-4">
+              <span className="text-[8px] font-black uppercase tracking-[0.25em] text-neutral-500">Bronze</span>
+              <div className="w-1 h-1 rounded-full bg-gold/50" />
+              <span className="text-[8px] font-black uppercase tracking-[0.25em] text-neutral-500">Cílios</span>
+              <div className="w-1 h-1 rounded-full bg-gold/50" />
+              <span className="text-[8px] font-black uppercase tracking-[0.25em] text-neutral-500">Beleza</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="group/input space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-neutral-400 ml-1 group-focus-within/input:text-gold transition-colors">Usuário</label>
               <input 
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-5 text-sm text-black focus:outline-none focus:border-black/10 focus:bg-white transition-all placeholder:text-neutral-300"
-                placeholder="dauana.admin"
+                placeholder="nome de usuário"
+                className="w-full border-b-2 border-neutral-100 py-3 text-sm focus:outline-none focus:border-gold transition-all bg-transparent placeholder:text-neutral-300 font-medium"
               />
             </div>
 
-            <div className="space-y-3">
-              <div className="flex justify-between items-center ml-1">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted opacity-60">Senha</label>
-                <button type="button" className="text-[8px] font-black uppercase tracking-widest text-muted hover:text-black transition-colors opacity-40 hover:opacity-100">
-                  Esqueceu?
-                </button>
-              </div>
+            <div className="group/input space-y-1.5">
+              <label className="text-[9px] font-black uppercase tracking-widest text-neutral-400 ml-1 group-focus-within/input:text-gold transition-colors">Senha de Acesso</label>
               <input 
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-neutral-50 border border-neutral-100 rounded-2xl p-5 text-sm text-black focus:outline-none focus:border-black/10 focus:bg-white transition-all"
                 placeholder="••••••••"
+                className="w-full border-b-2 border-neutral-100 py-3 text-sm focus:outline-none focus:border-gold transition-all bg-transparent font-medium"
               />
             </div>
 
             {error && (
-              <p className="text-[9px] text-red-500 font-bold uppercase tracking-widest text-center">
-                Acesso negado. Verifique os dados.
-              </p>
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-50 text-red-600 p-3 rounded-2xl text-[9px] font-bold uppercase tracking-widest text-center border border-red-100"
+              >
+                Identidade não confirmada. Revise os dados.
+              </motion.div>
             )}
 
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-black text-white py-5 rounded-2xl font-black uppercase tracking-[0.25em] hover:bg-neutral-800 transition-all mt-4 text-[11px] shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 group/btn disabled:opacity-70 disabled:cursor-wait overflow-hidden relative"
+              className="w-full bg-neutral-900 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.4em] hover:bg-black transition-all mt-4 text-[10px] flex items-center justify-center gap-3 group relative overflow-hidden disabled:bg-neutral-400 shadow-xl"
             >
+              <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               {loading ? (
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                >
-                  <LogIn className="w-4 h-4" />
-                </motion.div>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white" />
               ) : (
                 <>
-                  <span>Entrar no Sistema</span>
-                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                  <span>ACESSAR SISTEMA</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-gold" />
                 </>
               )}
             </button>
           </form>
-        </motion.div>
 
-        <div className="mt-12 text-center">
-          <p className="text-[9px] text-muted font-bold uppercase tracking-[0.2em] opacity-30">
-            Powered by Antigravity Technology © 2026
-          </p>
+          <div className="mt-12 text-center">
+            <p className="text-[7px] text-neutral-300 font-black uppercase tracking-[0.4em]">
+              Dauana Studio • Gestão de Elite © 2026
+            </p>
+          </div>
         </div>
       </motion.div>
     </div>

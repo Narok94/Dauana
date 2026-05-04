@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #050505;
-  --color-foreground: #fafafa;
-  --color-card: #0a0a0a;
-  --color-muted: #737373;
-  --color-border-subtle: #161616;
-  --color-accent: #ffffff;
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-card: #f9f9f9;
+  --color-muted: #666666;
+  --color-border-subtle: #f0f0f0;
+  --color-accent: #000000;
   
-  --shadow-premium: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 30px -4px rgba(0, 0, 0, 0.8);
+  --shadow-premium: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 10px 40px -10px rgba(0, 0, 0, 0.05);
 }
 
 :root {
-  --background: 0 0% 2%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 4%;
-  --muted: 0 0% 45%;
-  --border-subtle: 0 0% 8%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 98%;
+  --muted: 0 0% 40%;
+  --border-subtle: 0 0% 94%;
 }
 
 body {
@@ -25,19 +25,19 @@ body {
   font-family: "Inter", "Helvetica Neue", sans-serif;
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
-  background-image: radial-gradient(circle at 50% -10%, #151515 0%, transparent 60%);
+  background-image: radial-gradient(circle at 50% -20%, #f0f0f0 0%, transparent 70%);
   background-attachment: fixed;
 }
 
 .glass-card {
-  background: rgba(10, 10, 10, 0.4);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: var(--shadow-premium);
 }
 
 .text-gradient {
-  background: linear-gradient(180deg, #fff 20%, rgba(255, 255, 255, 0.5) 100%);
+  background: linear-gradient(180deg, #000 0%, #444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -51,18 +51,18 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 @layer base {
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+    filter: invert(0);
     cursor: pointer;
   }
 }

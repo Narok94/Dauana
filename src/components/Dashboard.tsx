@@ -31,13 +31,14 @@ interface DashboardProps {
   appointments: Appointment[];
   onAdd: (app: Omit<Appointment, 'id'>) => void;
   onRemove: (id: string) => void;
+  onUpdate: (app: Appointment) => void;
   onAddExpense: (exp: Omit<Expense, 'id'>) => void;
   services: Service[];
   expenses: Expense[];
   role: Role;
 }
 
-export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, services, expenses, role }: DashboardProps) {
+export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpense, services, expenses, role }: DashboardProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showTodayModal, setShowTodayModal] = useState(false);
@@ -72,6 +73,11 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
     window.open(`https://wa.me/?text=${encoded}`, '_blank');
   };
 
+  const toggleStatus = (app: Appointment) => {
+    const newStatus = app.status === 'completed' ? 'scheduled' : 'completed';
+    onUpdate({ ...app, status: newStatus });
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -83,7 +89,7 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
         <header className="h-24 border-b border-border-subtle flex items-center justify-between px-6 md:px-10 shrink-0 bg-white/80 backdrop-blur-md sticky top-0 z-10 gap-4">
           <div className="flex-1">
             <h2 className="text-xl md:text-2xl font-serif text-neutral-900 tracking-tighter leading-none">
-              Dauana <span className="text-[9px] font-black tracking-[0.4em] text-gold uppercase italic ml-1 opacity-60">Elite</span>
+              Dauana
             </h2>
             <button 
               onClick={() => setShowTodayModal(true)}
@@ -235,14 +241,17 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
-                        <span className={cn(
-                          "px-3 py-1.5 text-[8px] rounded-lg uppercase tracking-[0.2em] font-black transition-all",
-                          app.status === 'completed' 
-                            ? "bg-black text-white shadow-md" 
-                            : "bg-neutral-100 text-muted border border-neutral-200"
-                        )}>
-                          {app.status === 'completed' ? 'Concluído' : 'Confirmado'}
-                        </span>
+                        <button
+                          onClick={() => toggleStatus(app)}
+                          className={cn(
+                            "px-3 py-1.5 text-[8px] rounded-lg uppercase tracking-[0.2em] font-black transition-all shadow-sm active:scale-95 border",
+                            app.status === 'completed' 
+                              ? "bg-neutral-900 text-gold border-neutral-900" 
+                              : "bg-white text-neutral-400 border-neutral-100 hover:border-gold/20"
+                          )}
+                        >
+                          {app.status === 'completed' ? 'Concluído' : 'Confirmar'}
+                        </button>
                         <button 
                           onClick={() => sendWhatsAppReminder(app)}
                           className="p-2 text-muted hover:text-green-500 bg-neutral-50 hover:bg-green-50 rounded-lg transition-all"
@@ -319,9 +328,8 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-gold" />
-                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gold/60">Insight Estratégico</span>
               </div>
-              <h4 className="text-xl font-serif italic tracking-tighter mb-2">IA Business Master</h4>
+              <h4 className="text-xl font-serif italic tracking-tighter mb-2">Dauana Insights</h4>
               <p className="text-[10px] text-white/50 font-medium leading-relaxed uppercase tracking-widest leading-relaxed">
                 "O bronzeamento natural está em alta. Destaque essa oferta nos stories hoje."
               </p>
@@ -368,12 +376,23 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                       <button 
-                         onClick={() => sendWhatsAppReminder(app)}
-                         className="p-2 text-muted hover:text-green-500 bg-white rounded-lg transition-all"
-                       >
-                         <MessageCircle className="w-3.5 h-3.5" />
-                       </button>
+                        <button
+                          onClick={() => toggleStatus(app)}
+                          className={cn(
+                            "px-3 py-1.5 text-[8px] rounded-lg uppercase tracking-[0.2em] font-black transition-all shadow-sm active:scale-95 border",
+                            app.status === 'completed' 
+                              ? "bg-neutral-900 text-gold border-neutral-900" 
+                              : "bg-white text-neutral-400 border-neutral-100 hover:border-gold/20"
+                          )}
+                        >
+                          {app.status === 'completed' ? 'Concluído' : 'Confirmar'}
+                        </button>
+                        <button 
+                          onClick={() => sendWhatsAppReminder(app)}
+                          className="p-2 text-muted hover:text-green-500 bg-white rounded-lg transition-all"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </button>
                     </div>
                   </div>
                 ))

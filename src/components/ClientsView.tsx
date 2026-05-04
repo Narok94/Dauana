@@ -78,7 +78,7 @@ export function ClientsView({ appointments, services }: ClientsViewProps) {
                   <h3 className="text-lg md:text-xl font-serif text-neutral-900 group-hover:text-black transition-colors">{client.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-                    <p className="text-[8px] md:text-[9px] text-gold uppercase tracking-[0.4em] font-black">Cliente Elite</p>
+                    <p className="text-[8px] md:text-[9px] text-gold uppercase tracking-[0.4em] font-black">Cliente</p>
                   </div>
                 </div>
               </div>

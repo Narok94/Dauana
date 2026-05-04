@@ -43,7 +43,7 @@ export function CalendarView({ appointments }: CalendarViewProps) {
           <h1 className="text-2xl md:text-4xl font-serif text-neutral-900 capitalize">
             {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
           </h1>
-          <p className="text-[9px] md:text-[10px] text-gold mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-60">Visualização de Elite</p>
+          <p className="text-[9px] md:text-[10px] text-gold mt-1 md:mt-2 uppercase tracking-[0.3em] font-black opacity-60">Visualização do Calendário</p>
         </div>
         <div className="flex gap-2 md:gap-4">
           <button 

@@ -118,7 +118,7 @@ export function Login({ onLogin }: LoginProps) {
 
           <div className="mt-12 text-center">
             <p className="text-[7px] text-neutral-300 font-black uppercase tracking-[0.4em]">
-              Dauana Studio • Gestão de Elite © 2026
+              Dauana Studio © 2026
             </p>
           </div>
         </div>

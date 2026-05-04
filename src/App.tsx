@@ -56,6 +56,10 @@ export default function App() {
     setAppointments(appointments.filter(app => app.id !== id));
   };
 
+  const updateAppointment = (updatedApp: Appointment) => {
+    setAppointments(appointments.map(app => app.id === updatedApp.id ? updatedApp : app));
+  };
+
   return (
     <AnimatePresence mode="wait">
       {!user ? (
@@ -99,6 +103,7 @@ export default function App() {
                       appointments={appointments} 
                       onAdd={addAppointment} 
                       onRemove={removeAppointment}
+                      onUpdate={updateAppointment}
                       onAddExpense={addExpense}
                       services={services}
                       expenses={expenses}

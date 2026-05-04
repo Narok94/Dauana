@@ -91,7 +91,7 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
           {isSidebarOpen && (
             <div className="flex items-center gap-2 mt-2">
               <div className="w-4 h-[1px] bg-gold/40" />
-              <p className="text-[8px] uppercase tracking-[0.4em] text-neutral-400 font-bold">Gestão de Elite</p>
+              <p className="text-[8px] uppercase tracking-[0.4em] text-neutral-400 font-bold">Gestão Studio</p>
             </div>
           )}
         </div>
@@ -146,7 +146,7 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
                 <p className="text-xs font-bold text-black/90 truncate">Dauana A.</p>
                 <div className="flex items-center gap-1">
                    <div className="w-1 h-1 rounded-full bg-gold" />
-                   <p className="text-[8px] text-gold uppercase tracking-widest font-black truncate">Studio Premium</p>
+                   <p className="text-[8px] text-gold uppercase tracking-widest font-black truncate">Minha Conta</p>
                 </div>
               </div>
             )}

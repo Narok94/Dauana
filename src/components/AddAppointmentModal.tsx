@@ -116,7 +116,7 @@ export function AddAppointmentModal({ onClose, onAdd, services }: AddAppointment
             disabled={services.length === 0}
             className="w-full bg-neutral-900 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.3em] hover:bg-black transition-all mt-6 text-[10px] shadow-xl active:scale-95 disabled:opacity-50 border border-gold/10"
           >
-            Confirmar Reserva <span className="text-gold ml-1 italic font-serif">Elite</span>
+            Confirmar Reserva
           </button>
         </form>
       </motion.div>

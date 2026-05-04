@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { format, isSameDay, parseISO, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isToday } from 'date-fns';
@@ -16,14 +16,14 @@ export function CalendarView({ appointments }: CalendarViewProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   
-  const days = eachDayOfInterval({
+  const days = useMemo(() => eachDayOfInterval({
     start: startOfMonth(currentMonth),
     end: endOfMonth(currentMonth)
-  });
+  }), [currentMonth]);
 
-  const selectedDayAppointments = selectedDay 
+  const selectedDayAppointments = useMemo(() => selectedDay 
     ? appointments.filter(app => isSameDay(parseISO(app.date), selectedDay))
-    : [];
+    : [], [selectedDay, appointments]);
 
   const sendWhatsAppReminder = (app: Appointment) => {
     const text = `Oi ${app.clientName}! Confirmando seu horário de ${app.service} dia ${format(parseISO(app.date), 'dd/MM')} às ${app.time}. Até breve!`;

@@ -19,7 +19,7 @@ interface NavItemProps {
   collapsed?: boolean;
 }
 
-function NavItem({ icon, label, active, onClick, collapsed }: NavItemProps) {
+const NavItem = React.memo(({ icon, label, active, onClick, collapsed }: NavItemProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -66,7 +66,7 @@ function NavItem({ icon, label, active, onClick, collapsed }: NavItemProps) {
       </AnimatePresence>
     </div>
   );
-}
+});
 
 interface SidebarProps {
   activeTab: string;
@@ -226,7 +226,7 @@ export function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOp
   );
 }
 
-function MobileNavItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) {
+const MobileNavItem = React.memo(({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -244,7 +244,7 @@ function MobileNavItem({ icon, label, active, onClick }: { icon: React.ReactNode
         {active && (
           <motion.div 
             layoutId="mobile-nav-active"
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-black"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-black" 
           />
         )}
       </button>
@@ -264,4 +264,4 @@ function MobileNavItem({ icon, label, active, onClick }: { icon: React.ReactNode
       </AnimatePresence>
     </div>
   );
-}
+});

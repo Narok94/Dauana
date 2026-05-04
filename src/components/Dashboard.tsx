@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Trash2, 
   Sparkles, 
@@ -43,16 +43,16 @@ export function Dashboard({ appointments, onAdd, onRemove, onAddExpense, service
   const [showTodayModal, setShowTodayModal] = useState(false);
   const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'Material' });
   const { stats, cashFlowData } = useBusinessLogic(appointments, services, expenses);
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
   
-  const todayAppointments = appointments
+  const todayAppointments = useMemo(() => appointments
     .filter(app => isSameDay(parseISO(app.date), today))
-    .sort((a, b) => a.time.localeCompare(b.time));
+    .sort((a, b) => a.time.localeCompare(b.time)), [appointments, today]);
 
-  const totalTodayRevenue = todayAppointments.reduce((acc, app) => {
+  const totalTodayRevenue = useMemo(() => todayAppointments.reduce((acc, app) => {
     const service = services.find(s => s.name === app.service);
     return acc + (service?.price || 0);
-  }, 0);
+  }, 0), [todayAppointments, services]);
 
   const handleAddExpense = (e: React.FormEvent) => {
     e.preventDefault();

@@ -37,7 +37,7 @@ export function Login({ onLogin }: LoginProps) {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-[3px]" />
         <div 
-          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=70&w=1280&auto=format&fit=crop')] bg-cover bg-center" 
         />
       </div>
 

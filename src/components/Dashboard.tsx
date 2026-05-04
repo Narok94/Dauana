@@ -135,77 +135,38 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, onAddExpens
         </header>
 
         <div className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar pb-32 overscroll-none">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <button 
               onClick={() => setShowTodayModal(true)}
-              className="glass-card p-6 rounded-[32px] border border-neutral-100 shadow-sm relative overflow-hidden group text-left hover:border-black/10 transition-all"
+              className="glass-card p-4 rounded-[28px] border border-neutral-100 shadow-sm relative overflow-hidden group text-left transition-all bg-white"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.01] rounded-full blur-3xl group-hover:bg-black/[0.03] transition-colors" />
-              <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] mb-4 opacity-60">Agendas de Hoje</p>
-              <h3 className="text-3xl font-black italic tracking-tighter text-black">
-                {todayAppointments.length} <span className="text-sm font-black opacity-30 uppercase ml-2">Clientes</span>
-              </h3>
-              <div className="flex items-center gap-2 mt-4">
-                <div className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase bg-neutral-900 text-white shadow-lg">
-                  R$ {totalTodayRevenue.toLocaleString('pt-BR')}
-                </div>
-                <span className="text-[9px] font-bold text-muted uppercase tracking-widest opacity-40">previsão hoje</span>
+              <p className="text-[8px] font-black text-muted uppercase tracking-[0.2em] mb-2 opacity-50">Agendas Hoje</p>
+              <div className="flex items-baseline gap-1">
+                <h3 className="text-2xl font-serif text-neutral-900 leading-none">{todayAppointments.length}</h3>
+                <span className="text-[9px] font-bold text-neutral-400">CLIENTES</span>
               </div>
             </button>
 
             {role === 'admin' && (
-              <>
-                <div className="glass-card p-6 rounded-[32px] border border-neutral-100 shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.01] rounded-full blur-3xl group-hover:bg-black/[0.03] transition-colors" />
-                <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] mb-4 opacity-60">Faturamento Mês</p>
-                <h3 className="text-3xl font-black italic tracking-tighter text-black">R$ {stats.curMonthRevenue.toLocaleString('pt-BR')}</h3>
-                <div className="flex items-center gap-2 mt-4">
-                  <div className={cn(
-                    "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase",
-                    stats.growth >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
-                  )}>
-                    {stats.growth >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {Math.abs(stats.growth).toFixed(1)}%
-                  </div>
-                  <span className="text-[9px] font-bold text-muted uppercase tracking-widest opacity-40">vs mês anterior</span>
-                </div>
+              <div className="glass-card p-4 rounded-[28px] border border-neutral-100 shadow-sm relative overflow-hidden group bg-white">
+                <p className="text-[8px] font-black text-muted uppercase tracking-[0.2em] mb-2 opacity-50">Faturamento Mês</p>
+                <h3 className="text-2xl font-serif text-neutral-900 italic leading-none">R$ {stats.curMonthRevenue.toLocaleString('pt-BR')}</h3>
               </div>
+            )}
 
-              <div className="glass-card p-6 rounded-[32px] border border-neutral-100 shadow-sm col-span-1 md:col-span-2">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-60">Fluxo Financeiro Recente</p>
-                  <div className="flex gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-gold" />
-                      <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Receitas</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[120px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={cashFlowData}>
-                      <defs>
-                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.2}/>
-                          <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                      <XAxis dataKey="date" hide />
-                      <Tooltip 
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold' }}
-                      />
-                      <Area type="monotone" dataKey="revenue" stroke="#D4AF37" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={3} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+            <div className="glass-card p-4 rounded-[28px] border border-neutral-100 shadow-sm relative overflow-hidden group bg-white">
+              <p className="text-[8px] font-black text-muted uppercase tracking-[0.2em] mb-2 opacity-50">Previsão Hoje</p>
+              <h3 className="text-2xl font-serif text-gold leading-none">R$ {totalTodayRevenue.toLocaleString('pt-BR')}</h3>
+            </div>
+          </div>
+
+          <div className="max-w-4xl">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-serif text-neutral-900 italic">Próximas Horas</h3>
+                <div className="h-[1px] w-8 bg-gold mt-1" />
               </div>
-            </>
-          )}
-        </div>
-
-          <div className="grid grid-cols-1 gap-6 max-w-4xl">
-            <h3 className="text-[10px] font-black text-muted uppercase tracking-[0.4em] opacity-60 mb-2">Próximas Horas</h3>
+            </div>
             {todayAppointments.length === 0 ? (
               <div className="text-muted text-sm italic font-light opacity-50 bg-neutral-50 p-10 rounded-3xl border border-dashed border-neutral-200 text-center">
                 Descanse um pouco! Nenhum agendamento para hoje.

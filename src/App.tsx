@@ -27,14 +27,14 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
 
   const [services, setServices] = useLocalStorage<Service[]>('services', [
-    { id: '1', name: 'Corte Premium', duration: 45, price: 50 },
-    { id: '2', name: 'Barba Tradicional', duration: 30, price: 30 },
-    { id: '3', name: 'Styling Completo', duration: 60, price: 80 },
+    { id: '1', name: 'Bronzeamento Natural', duration: 90, price: 120 },
+    { id: '2', name: 'Extensão de Cílios', duration: 120, price: 150 },
+    { id: '3', name: 'Design de Sobrancelhas', duration: 45, price: 60 },
   ]);
 
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', [
-    { id: '1', clientName: 'Ana Beatriz Silva', service: 'Corte Premium', date: new Date().toISOString().split('T')[0], time: '09:00', status: 'scheduled' },
-    { id: '2', clientName: 'Ricardo Costa', service: 'Barba Tradicional', date: new Date().toISOString().split('T')[0], time: '10:30', status: 'completed' },
+    { id: '1', clientName: 'Ana Beatriz Silva', service: 'Extensão de Cílios', date: new Date().toISOString().split('T')[0], time: '09:00', status: 'scheduled' },
+    { id: '2', clientName: 'Gabriela Mendes', service: 'Bronzeamento Natural', date: new Date().toISOString().split('T')[0], time: '10:30', status: 'completed' },
   ]);
 
   const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [

@@ -146,6 +146,7 @@ export default function App() {
                     <FinanceView 
                       appointments={appointments}
                       services={services}
+                      role={user.role}
                     />
                   </motion.div>
                 )}

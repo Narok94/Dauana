@@ -1,31 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Trash2, 
-  Sparkles, 
-  TrendingUp, 
-  TrendingDown, 
   PlusCircle, 
-  Wallet, 
   MessageCircle,
-  Crown,
-  FileText
+  Crown
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { format, isSameDay, parseISO, startOfWeek, addDays } from 'date-fns';
+import { format, isSameDay, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Appointment, Service, Role } from '../types';
 import { AddAppointmentModal } from './AddAppointmentModal';
 import { cn } from '../lib/utils';
 import { useBusinessLogic } from '../hooks/useBusinessLogic';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
 
 interface DashboardProps {
   appointments: Appointment[];
@@ -103,7 +89,7 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, services, r
         </header>
 
         <div className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar pb-32 overscroll-none">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="hidden md:grid md:grid-cols-4 gap-4 mb-8">
             <button 
               onClick={() => setShowTodayModal(true)}
               className="glass-card p-4 rounded-[28px] border border-neutral-100 shadow-sm relative overflow-hidden group text-left transition-all bg-white"
@@ -195,74 +181,16 @@ export function Dashboard({ appointments, onAdd, onRemove, onUpdate, services, r
               ))
             )}
           </div>
-        </div>
-      </div>
 
-      <div className="w-full lg:w-96 p-8 border-l border-border-subtle bg-white flex flex-col gap-10 shrink-0 pb-32 lg:pb-8 overflow-y-auto">
-        {role === 'admin' && (
-          <>
-            <div>
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mb-6 opacity-60">Serviços Lucrativos</h3>
-              <div className="space-y-4">
-                {stats.serviceProfitability.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-neutral-50 flex items-center justify-center text-[10px] font-black border border-neutral-100 group-hover:bg-black group-hover:text-white transition-all">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <p className="text-[11px] font-black uppercase tracking-tight">{item.name}</p>
-                        <p className="text-[9px] text-muted font-bold uppercase opacity-60">{item.count} atendimentos</p>
-                      </div>
-                    </div>
-                    <p className="text-xs font-black italic">R$ {item.revenue.toLocaleString('pt-BR')}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mb-6 opacity-60 flex items-center gap-2">
-                <Crown className="w-3 h-3" />
-                Clientes VIP
-              </h3>
-              <div className="grid grid-cols-1 gap-3">
-                {stats.vipClients.map((client, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                    <p className="text-[11px] font-black uppercase">{client.name}</p>
-                    <div className="px-2 py-1 bg-black text-white text-[8px] font-black rounded-lg">
-                      {client.count}X
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className="mt-4">
-           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted opacity-60 mb-4">Relatórios</h3>
-           <button className="w-full flex items-center justify-between p-5 bg-neutral-50 rounded-[24px] border border-neutral-100 hover:bg-white hover:shadow-md transition-all group">
-             <div className="flex items-center gap-3">
-               <FileText className="w-4 h-4 text-muted group-hover:text-black" />
-               <span className="text-[10px] font-black uppercase tracking-widest">Resumo Mensal PDF</span>
-             </div>
-             <TrendingUp className="w-3 h-3 opacity-20" />
-           </button>
-        </div>
-
-        <div className="mt-auto">
-          <div className="p-8 rounded-[40px] bg-neutral-900 text-white relative overflow-hidden group border border-gold/10">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-gold/10 transition-all duration-700" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5 text-gold" />
-              </div>
-              <h4 className="text-xl font-serif italic tracking-tighter mb-2">Dauana Insights</h4>
-              <p className="text-[10px] text-white/50 font-medium leading-relaxed uppercase tracking-widest leading-relaxed">
-                "O bronzeamento natural está em alta. Destaque essa oferta nos stories hoje."
-              </p>
-            </div>
+          {/* Botão Agendar Grande para Mobile */}
+          <div className="md:hidden fixed bottom-24 left-6 right-6 z-20">
+            <button 
+              onClick={() => setShowAddForm(true)}
+              className="w-full bg-neutral-900 text-white py-5 rounded-2xl font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all text-[11px] border border-gold/20"
+            >
+              <PlusCircle className="w-5 h-5 text-gold" />
+              Agendar Novo Horário
+            </button>
           </div>
         </div>
       </div>
